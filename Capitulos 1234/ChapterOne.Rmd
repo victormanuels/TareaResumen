@@ -1,0 +1,53 @@
+
+
+# Capitulo 1
+## Data, Exploratory Analysis, and R
+### ¿Por qué analizamos datos?
+
+    1. Comprender lo que ha sucedido o lo que está sucediendo;
+    2. Para predecir qué es probable que suceda, ya sea en el futuro o en otras circunstancias que aún no hemos visto;
+    3. Para guiarnos en la toma de decisiones.
+    
+### ¿Que son los datos?
+    Hablando en términos generales, el término "datos" se refiere a una colección de detalles.
+
+## R
+    Usar R, o cualquier otro entorno de análisis de datos, implica tres tareas básicas:
+    1. Ponga los datos que desea analizar a disposición del software de análisis;
+    2. Realizar el análisis;
+    3. Ponga los resultados del análisis a disposición de quienes los necesitan.
+
+## Preguntas importantes al analizar datos
+    
+    ¿Cuantos datos tiene el dataset contenido?
+    ¿Cuantos campos o variables son incluidas en cada datos?
+    ¿Que tipos de variables son(numeros reales, integers, variables categoricas como ciudad, tipo o calgo por el estilo)
+    ¿Todas esas variables pueden ser siempre observadas?
+    ¿Todas esas variables incluidas en el dataset las unicas que es lo que se espera?
+    ¿Esas variables en los dataset estan exibiendo el tipo de relacion que nosotros esperamos?
+
+## Como cargar las librerías y su estructura del dataset
+```{r}
+ library(MASS)
+  head(whiteside)
+  str(whiteside)
+```
+
+## Resumen del Dataset
+```{r}
+summary(whiteside)
+boxplot(Gas ~ Insul, data = whiteside)
+```
+
+## Graficacion del dataset
+```{r}
+
+plot(whiteside$Temp, whiteside$Gas, pch=c(6,16)[whiteside$Insul])
+
+plot(whiteside$Temp, whiteside$Gas, pch=c(6,16)[whiteside$Insul])
+legend(x="topright",legend=c("Insul = Before","Insul = After"), pch=c(6,16))
+Model1 <- lm(Gas ~ Temp, data = whiteside, subset = which(Insul == "Before"))
+Model2 <- lm(Gas ~ Temp, data = whiteside, subset = which(Insul == "After"))
+abline(Model1, lty=2)
+abline(Model2)
+```

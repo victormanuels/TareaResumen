@@ -1,0 +1,207 @@
+
+
+# Capitulo 2
+## Graficas en R
+### Gráficos exploratorios vs gráficos explicativos
+ La exploración generalmente se realiza mejor con un alto nivel de granularidad. Puede haber mucho ruido en sus datos, pero si simplifica demasiado o elimina demasiada información, podría terminar perdiendo algo importante.
+
+### Sistema de graficas base de R
+
+### Graficacion del dataset
+La función de gráficos base más utilizada es plot, que es una función genérica, lo que significa que la naturaleza de la gráfica que genera depende del tipo de objeto R que le pasemos.
+```{r}
+
+library (MASS)
+plot(UScereal, las = 2)
+```
+
+### Lattice graphics
+Provee una implentación alternativa de muchas funciones de gaficacio basicas.
+Una ventaja del sistema de gráficos de red es que puede producir tramas extremadamente sofisticadas a partir de expresiones relativamente simples, especialmente con su función de acondicionamiento multipanel. Sin embargo, el costo de esto es que la tarea de agregar anotaciones simples a un diagrama de red, como agregar líneas o texto adicionales, es más compleja en comparación con la misma tarea en los gráficos tradicionales.
+```{r}
+
+library(lattice)
+xyplot(MPG.city ~ Horsepower | Cylinders, data = Cars93)
+```
+
+### La flexibilidad de plot
+
+Este modelo predice el valor promedio del consumo de gas de calefacción Gas en el dataframe de whiteside a partir de los valores de las otras dos variables, Temp e Insul. Se genera fácilmente usando el paquete rpart, con el siguiente código
+```{r}
+
+library(rpart)
+rpartModel <- rpart(Gas ~ ., data = whiteside)
+plot(rpartModel)
+text(rpartModel)
+```
+
+
+El segundo ejemplo basado en el modelo se muestra en la Fig. 2.5 y pertenece a la clase de modelos MOB, también discutido en el Capítulo 10. Al igual que el modelo rpart que se acaba de describir, este modelo tiene una estructura basada en un árbol, pero en lugar de generar un solo valor numérico previsto para cada nodo terminal del árbol (es decir, cada "hoja"), cada nodo terminal contiene un modelo de regresión lineal que genera predicciones a partir de otras covariables.
+
+```{r}
+library(partykit)
+MOBmodel <- lmtree(Gas ~ Temp | Insul, data = whiteside)
+```
+
+
+## Detalles de las graficas
+Se pueden utilizar las graficas con detalles basicos, aunque puede aportar mucho mejor entendimiento agregando detalles importantes.
+
+### Agregar puntos y líneas a un diagrama de dispersión
+La siguiente línea invoca la función de trazado, especificando tres argumentos opcionales:
+
+            xlab es una cadena de caracteres que especifica el texto para la etiqueta del eje x;
+            ylab es una cadena de caracteres que especifica el texto para la etiqueta del eje y;
+             type = "n" especifica que el diagrama básico se construye, pero no se muestra.
+Las  tres líneas despues de index primero construyen un puntero a los valores atípicos en la variable de calorías (índice), y luego agregan puntos a la gráfica usando la función de puntos:
+```{r}
+par(mfrow=c(1,1))
+x <- UScereal$sugars
+y <- UScereal$calories
+plot(x, y, xlab = "Grams of sugar per serving",
+ylab = "Calories per serving", type = "n")
+index <- which(y > 300)
+points(x[-index], y[-index], pch = 16)
+points(x[index], y[index], pch = 18, cex = 2)
+
+```
+
+### Añadiento texto
+Se añade la funcion text la cual agregara texto a la grafica con el cual podemos indicar mas detalles.
+ 
+```{r}
+par(mfrow=c(1,1))
+x <- UScereal$sugars
+y <- UScereal$calories
+plot(x, y, xlab = "Grams of sugar per serving",
+ylab = "Calories per serving", type = "n")
+index <- which(y > 300)
+points(x[-index], y[-index], pch = 16)
+points(x[index], y[index], pch = 18, cex = 2)
+pointLabels <- paste(rownames(UScereal)[index], "-->")
+text(11, y[index], pointLabels, adj = 1, font = 2)
+```
+
+
+### Legends de indicación de lineas de las graficas
+Se logra con la función de leyenda, que coloca una visualización de texto explicativo en recuadro en una ubicación especificada en el diagrama actual
+
+```{r}
+par(mfrow=c(1,1))
+x <- UScereal$sugars
+y <- UScereal$calories
+plot(x, y, xlab = "Grams of sugar per serving",
+ylab = "Calories per serving", type = "n")
+index <- which(y > 300)
+points(x[-index], y[-index], pch = 16)
+points(x[index], y[index], pch = 18, cex = 2)
+pointLabels <- paste(rownames(UScereal)[index], "-->")
+text(11, y[index], pointLabels, adj = 1, font = 2)
+legend(x = "topright", lty = c(3,2), lwd = c(1,2),
+legend = c("OLS line", "robust line"))
+```
+
+### Diferentes tipos de graficas
+### Grafica de pastel
+Los gráficos circulares representan vectores de datos numéricos no negativos en forma de un "pastel" circular con un "corte" para cada elemento del vector, cuyo tamaño es proporcional a su valor relativo.  Los gráficos circulares son una muy mala forma de mostrar información. El ojo es bueno para juzgar medidas lineales y malo para juzgar áreas relativas. Un gráfico de barras o gráfico de puntos es una forma preferible de mostrar este tipo de datos.
+```{r}
+slices <- c(10, 12,4, 16, 8)
+lbls <- c("US", "UK", "Australia", "Germany", "France")
+pie(slices, labels = lbls, main="Pie Chart of Countries")
+```
+
+### Grafica de barras
+Los gráficos de barras pueden ser efectivos para mostrar datos numéricos con valores enteros como los obtenidos con la función de tabla. 
+```{r}
+ counts <- table(mtcars$gear)
+barplot(counts, main="Car Distribution",
+   xlab="Number of Gears")
+```
+
+La grafica de barras tambien puede colocarse de manera horizontal.
+
+```{r}
+ counts <- table(mtcars$gear)
+barplot(counts, main="Car Distribution",
+   xlab="Number of Gears",horiz = TRUE)
+```
+
+### Función Symbols
+ 
+La función   Symbols es una función de gráficos base extremadamente flexible que admite la generación de gráficos que muestran la relación entre más de dos variables numéricas.
+```{r}
+symbols(Cars93$Horsepower, Cars93$MPG.city,
+circles = as.numeric(Cars93$Cylinders),
+inches = 0.4)
+text(Cars93$Horsepower, Cars93$MPG.city,
+Cars93$Cylinders, srt = 30)
+```
+
+
+
+### Multiples Graficas con la funcion mfrow
+El parámetro de trazado mfrow es un vector bidimensional que define el número de elementos en una matriz rectangular de gráficos. El primer elemento de este vector especifica el número de filas en esta matriz de trazado, mientras que el segundo elemento especifica el número de columnas. Para crear una matriz con R filas y columnas C, primero especificamos par (mfrow = c (R, C)) y luego usamos cualquiera de las funciones gráficas básicas para crear cada gráfico individual.
+
+```{r}
+par(mfrow=c(1,2))
+plot(Cars93$Horsepower, Cars93$MPG.city, ylim = c(15, 50))
+title("Plot no. 1")
+plot(Cars93$Horsepower, Cars93$MPG.highway, ylim = c(15, 50))
+title("Plot no. 2")
+
+
+par(mfrow=c(2,2))
+plot(Cars93$Cylinders, Cars93$MPG.city, las = 2, ylim = c(15, 50))
+title("MPG.city vs. Cylinders")
+plot(Cars93$Cylinders, Cars93$MPG.highway, las = 2, ylim = c(15, 50))
+title("MPG.highway vs. Cylinders")
+plot(Cars93$MPG.city, Cars93$MPG.highway, xlim = c(15, 50),
+ylim = c(15, 50))
+title("MPG.highway vs. MPG.city")
+abline(a = 0, b = 1, lty = 2, lwd = 2)
+delta <- Cars93$MPG.highway - Cars93$MPG.city
+plot(Cars93$Cylinders, delta, las = 2)
+title("Mileage difference vs. Cylinders")
+```
+
+#### Colores en graficas de R
+Si se usa bien, el color puede agregar mucho a una pantalla de datos gráficos, lo que nos ayuda a ver detalles importantes, pero si se usa mal, el color puede ocultar estos detalles por completo. 
+
+
+
+```{r}
+
+Top12Colors <- c("red", "green", "yellow", "blue", "black", "white",
+"pink", "cyan", "gray", "orange", "brown", "purple")
+colorVector <- rev(Top12Colors)
+barLengths <- c(rep(1,6), rep(2,6))
+yvec <- barplot(barLengths, col = colorVector, horiz = TRUE, axes = FALSE)
+axis(2, yvec, colorVector, las = 2)
+```
+
+
+### Opciones de color en R
+El sistema de gráficos base en R admite 657 colores, especificados con los parámetros gráficos apropiados
+
+              col specifies the color of text and plotting symbols;
+              col.axis specifies the color of the axes;
+              col.lab specifies the color of the axis labels;
+              col.main specifies the color of the main plot title;
+              col.sub specifies the color of the plot subtitle.
+              
+
+
+```{r}
+
+set.seed(3)
+colorNames <- sort(sample(colors(), size = 50))
+plot(seq(1, 10, 1), rep(5, 10), ylim = c(0, 6), xlab = "", ylab = "",
+axes = FALSE, type = "n")
+for (i in 1:5){
+index <- seq(1, 10, 1) + (i-1) * 10
+angle <- (-1)^(i+1) * 45
+text(seq(1, 10, 1), i, colorNames[index], col = colorNames[index],
+srt = angle)
+}
+```
+              

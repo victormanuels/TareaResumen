@@ -1,0 +1,182 @@
+### Ejercicios
+### Capitulo 1
+
+### Ejercicio 1
+
+```{r}
+ library(MASS)
+library(robustbase)
+intersect(mammals, Animals2)
+setdiff(mammals, Animals2)
+
+```
+### Ejercicio 2
+```{r}
+ library(MASS)
+library(car)
+library(robustbase)
+
+par(mfrow=c(2,2))
+truehist(Animals2$brain)
+truehist(log(Animals2$brain))
+qqPlot(Animals2$brain)
+title(" Normal QQ-plot ")
+qqPlot(log(Animals2$brain))
+title("Normal QQ-plot ")
+```
+### Ejercicio 3
+```{r}
+ libReturn<-library()
+str(libReturn)
+
+```
+### Ejercicio 4
+```{r}
+ library(MASS)
+str(cabbages)
+length(which(is.na(cabbages)))
+```
+### Ejercicio 5
+```{r}
+ library(car)
+summary(Chile)
+ 
+ 
+```
+### Ejercicio 6
+```{r}
+ library(MASS)
+library(car)
+str(cabbages)
+qqPlot(cabbages$HeadWt)
+qqPlot(cabbages$VitC)
+```
+### Ejercicio 7
+```{r}
+ library(MASS)
+library(car)
+#summary(whiteside)
+boxplot( VitC ~ Cult , data = cabbages)
+```
+### Ejercicio 8
+```{r}
+ library(MASS)
+ plot(cabbages$VitC, cabbages$HeadWt)
+```
+### Ejercicio 9
+```{r}
+ 
+```
+
+### Ejercicio 10
+```{r}
+ library(MASS)
+ summary(cabbages)
+
+cor(cabbages$HeadWt, cabbages$VitC)
+
+```
+
+### Capitulo 2
+
+### Ejercicio 1
+
+```{r}
+ 
+library(MASS)
+library(car)
+plot(fgl$Ca ~ fgl$RI, data = fgl,xlab="Ca concentratin", ylab="Refractive index",las=0)
+```
+
+### Ejercicio 2
+```{r}
+ library(MASS)
+ boxplot(Mg~type,data=fgl, main="Car Milage Data",
+   xlab="Forensic glass type", ylab="Mg concentration" ,horiz=TRUE) 
+```
+### Ejercicio 3
+```{r}
+ library(MASS)
+ plot(fgl$Ca ~ fgl$RI, data = fgl)
+```
+
+### Ejercicio 4
+```{r}
+ library(MASS)
+tipos <- table(fgl$type)
+tipos=sort(tipos)
+barplot(tipos,xlab="Records listing glass type",horiz=TRUE,font.lab=4) 
+```
+
+### Ejercico 5
+```{r}
+ 
+library(MASS)
+
+par(mfrow=c(2,2))
+plot(fgl$Mg)
+plot(fgl$Ca)
+plot(fgl$K)
+plot(fgl$Ba)
+ 
+```
+### Ejercicio 6
+```{r}
+ library(MASS)
+par(mfrow=c(1,1))
+x <- UScereal$sugars
+y <- UScereal$calories
+
+plot(x, y, xlab = "GCalories per serving",
+ylab = "Grams of fat per serving", type = "n")
+```
+
+
+### Ejercicio 7
+```{r}
+library(MASS)
+par(mfrow=c(1,1))
+x <- UScereal$sugars
+y <- UScereal$calories
+
+plot(x, y, xlab = "GCalories per serving",
+ylab = "Grams of fat per serving", type = "n")
+ 
+ 
+```
+
+### Ejercicio 8
+```{r}
+ library(MASS)
+ plot(cabbages$VitC,cabbages$HeadWt,type = 'n')
+ 
+indexC39<-cabbages[cabbages$Cult == "c39",]
+indexC52<-cabbages[cabbages$Cult == "c52",]
+  
+points(indexC39$VitC, indexC39$HeadWt,pch = 6)
+points(indexC52$VitC, indexC52$HeadWt,pch = 17)
+```
+
+
+### Capitulo 3
+
+### Ejercicio 1
+
+```{r}
+library(MASS)
+ 
+str(fgl)
+
+ apply(fgl[0:9], MARGIN=2, mean)
+ apply(fgl[0:9], MARGIN=2, median)
+ apply(fgl[0:9], MARGIN=2, sd)
+ apply(fgl[0:9], MARGIN=2, mad)
+```
+
+
+### Ejercicio 2
+
+```{r}
+qnorm( 0.99)
+
+```

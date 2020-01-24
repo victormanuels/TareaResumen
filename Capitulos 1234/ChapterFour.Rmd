@@ -1,0 +1,209 @@
+---
+title: "Trabajando con datos Externos"
+output: html_document
+---
+Ingresar datos en nuestra sesión R, y aquellas para la tarea estrechamente relacionada de guardar resultados en archivos de datos externos que pueden ser utilizados por otros. El resto de este capítulo está organizado de la siguiente manera. Uno de los puntos principales es que los archivos de datos vienen en diferentes tipos, cada uno requiere diferentes herramientas de R para leer, y estas discusiones se centran en algunos de los tipos de archivos más comunes. Alternativamente, si los datos que queremos recuperar no están contenidos en un archivo pero están incrustados en el texto que se muestra en una página web, puede ser necesario extraerlos directamente de la página web. Dado que las páginas web se representan en HTML , es necesario en estos casos leer y analizar archivos HTML. Uno de los formatos de archivo de datos más populares y convenientes es el archivo CSV.
+
+### Administracion de archivos en R
+La funcion getwd es la que se encarga del directorio, por defecto se asume la raiz del proyecto R. Es posible cambiar el directorio por uno existente, si no marcara un error.
+```{r}
+ getwd()
+```
+list.files() trae un listado de todos los archivos contenidos en el directorio especificado.
+```{r}
+
+list.files(path =  getwd(),
+pattern = "Three")
+```
+La función file.info nos permite conocer detalles sobre un archivo más allá de su nombre, incluido su tamaño, si es un directorio o no, si es ejecutable o no, sus permisos de archivo.
+```{r}
+file.info( getwd())
+```
+
+### Entrada de datos manual
+La entrada manual de datos es tediosa y propensa a errores, por lo que debe evitarse siempre que sea posible.
+### La entrada manual de datos es mala pero a veces conveniente
+Aunque la entrada manual de datos a veces es necesaria, generalmente es una mala práctica. Una de las razoens es que  si el conjunto de datos es muy grande, el esfuerzo requerido para la entrada manual puede ser inviable. La segunda razón por la cual el ingreso manual de datos es malo es que es propenso a errores, con errores que pueden tomar muchas formas y, en casos desafortunados, ser extremadamente difíciles de detectar. Los ejemplos específicos incluyen:
+
+    • omitir dígitos de datos numéricos (por ejemplo, el año 2006 ingresado como 206);
+    • transposición de dígitos en datos numéricos (por ejemplo, el año 2006 ingresado como 2060);
+    • ingresar el valor correcto en el campo incorrecto (por ejemplo, ingresar el valor de la ciudad en el campo del país en el ejemplo de datos de Grande Latte);
+
+### Interactuando con internet
+
+, Internet es una fuente cada vez más importante de grandes volúmenes de datos. En los casos más simples, Internet proporciona enlaces a archivos que contienen los datos que queremos, lo que nos permite obtener estos datos en los siguientes tres pasos:
+
+      1. Encuentre el sitio web desde el cual está disponible el conjunto de datos;
+      2. Haga clic en los enlaces apropiados para descargar los datos en el formato que desee;
+      3. Lea el archivo de datos resultante en su sesión de R.
+      
+      
+### Ejemplos de datos obtenidos de internet
+### Un conjunto de datos de millaje de gasolina de automóvil
+Los conjuntos de datos que contienen datos sobre el consumo de combustible del automóvil están disponibles en el paquete de conjuntos de datos como el marco de datos mtcars y en el paquete MASS como el marco de datos Cars93.
+```{r}
+browseURL("http://archive.ics.uci.edu/ml")
+#download.file(URL, "UCIautoMpg.txt")
+```
+### Los datos de cuenta bancaria no reclamados canadienses
+El dataset en el que se basa este ejemplo se obtuvo de Socrata, otra fuente de datos disponibles gratuitamente sobre una variedad de temas diferentes. Podemos conectarnos a este sitio web desde una sesión R usando el mismo código básico que antes:
+```{r}
+SocrataURL <- "https://opendata.socrata.com/"
+browseURL(SocrataURL)
+DownloadFile <- "/Unclaimed_bank_accounts.csv"
+file.copy(DownloadFile, "Unclaimed_bank_accounts.csv")
+```
+
+
+### Una breve introducción a HTML
+Extraer informaicon de un documento HTML
+```{r}
+htmlExample <- readLines("http://archive.ics.uci.edu/ml")
+htmlExample[1:10]
+```
+
+### TRabajando con archivos CSV
+Uno de los formatos de archivo más convenientes para intercambiar datos entre diferentes entornos de software son los  archivos CSV, que se organizan en filas, con un registro por fila y los campos en cada registro separados por comas.
+
+### LEyendo archivos CSV
+Para la lectura de un archivo csv se necesita comp arametro principal la ruta del archivo el cual sera leido.
+```{r}
+unclaimedFrame <- read.csv("readCSV.csv",stringsAsFactors = FALSE)
+head(unclaimedFrame)
+```
+
+### EScribiendo archivos CSV
+pPara escribir un nuevo archivo csv se utiliza la funcion write.csv, la que como parametro principal debe de recibir el nombre del archivo CSV y el dataset de datos de donde se extraera la información.
+```{r}
+ 
+write.csv(unclaimedFrame, "unclaimedFrame.csv", row.names=FALSE)
+```
+
+### Hojas de calculo vs archivos CSV no son lo mismo
+                1. un archivo CSV es el archivo de datos simple descrito anteriormente, que Microsoft Excel puede leer, junto con muchos otros programas, incluidos R, Python y Microsoft Access, por nombrar solo algunos;
+          
+          2. El programa de hoja de cálculo Microsoft Excel es un paquete de software que puede hacer muchas cosas, incluyendo leer y escribir archivos CSV, realizar cálculos simples y análisis de datos, y generar trazados;
+          
+          3. un archivo de datos de Microsoft Excel contiene los datos en los que se basa una hoja de cálculo de Microsoft Excel, junto con mucha información adicional, incluido el formato de visualización, el código requerido para los cálculos internos, etc.
+          
+          
+### Dos posibles problemas con los archivos CSV
+Primero, la posibilidad de que la función read.csv pueda cambiar los nombres de las variables; y segundo, los problemas que pueden surgir al leer archivos CSV que contienen cadenas de caracteres con comas 
+
+
+Todo caracter no permitido por read.csv automaticamente se cambia por puntos.
+
+El segundo problema es que un campo de texto tenga comas incrustadas en el, esto sera tomado por csv como una separación de columnas, provocando un error.
+
+
+### Trabajando con otros tipos de datos
+### Archivos de texto
+Se peude trabajar con archivos txt, el problema es que como no se tiene una estructura especifica la cual seguir, en ocasiones puede ser complicado el procesado de la informacion. Para leer un archivo de texto se utiliza la funcion "readLines"
+
+```{r}
+ 
+
+autoMpgRecords <- readLines("UCIautoMpg.txt")
+x <- autoMpgRecords[1]
+nchar(x)
+substr(x, 1, 56)
+substr(x, 57, 84)
+
+ 
+```
+
+### Guardar y recuperar objetos R
+Se utiliza la funcion saveRDS para guardar un archivo con extension "Rds"  y volver a utilizarlo en otro momento, dado que si no se guarda, al cerrar la sesión se eliminara permanentemente.
+```{r}
+ 
+linearModel <- lm(mpg ~ ., data = mtcars)
+names(linearModel)
+saveRDS(linearModel, "linearModelExample.rds")
+recoveredLinearModel <- readRDS("linearModelExample.rds")
+identical(recoveredLinearModel, linearModel)
+```
+### Guardar graficas en archivos PDf o PNG
+```{r}
+
+pdf("AutoMpgBoxplotEx.pdf")
+boxplot(mpg~cyl,data=mtcars, main="Car Milage Data",
+   xlab="Number of Cylinders", ylab="Miles Per Gallon")
+dev.off()
+
+png("AutoMpgBoxplotEx.png")
+boxplot(mpg~cyl,data=mtcars, main="Car Milage Data",
+   xlab="Number of Cylinders", ylab="Miles Per Gallon")
+dev.off()
+```
+
+
+### Combinar archvos externos
+A menudo, los datos que deseamos analizar provienen de múltiples fuentes. Una forma de hacerlo es la siguiente: 
+```{r}
+
+#FlawedMergeFrame <- merge(LatteIndexFrame, BigMacJan2013,
+#by.x="country", by.y="Country")
+
+
+#LatteSubset <- data.frame(country = as.character(LatteIndexFrame$country),
+#city = as.character(LatteIndexFrame$city),
+#GrandeLatteIndex = LatteIndexFrame$price,
+#stringsAsFactors = FALSE)
+#BigMacSubset <- data.frame(country = as.character(BigMacJan2013$Country),
+#BigMacIndex = BigMacJan2013$dollar_price,
+#stringsAsFactors = FALSE)
+#BetterMerge <- merge(LatteSubset, BigMacSubset)
+#str(BetterMerge, vec.len = 2)
+```
+
+
+### Una breve introduccion a las bases de datos
+R tiene la capacidad de establecer una conexion a las bases de datos con los    paquetes sqldf y RSQLite , de esta forma realizar constulas. Nos permite aplicar consultas SQL a marcos de datos en R. Este paquete se basa en el paquete RSQLite que proporciona soporte R para la base de datos sqlite3.
+
+### Bases de datos relacionales, consultas y SQL
+
+      1. La base de datos está diseñada: esto implica decidir qué variables están incluidas y cómo están organizadas (los textos de bases de datos estándar como el de Date dedican considerable atención al diseño de la base de datos [17]);
+    2. El diseño de la base de datos se implementa en un entorno de software específico (p. Ej., Oracle, Teradata, Microsoft SQL Server, Microsoft Access, MySQL, PostgreSQL o sqlite3), lo que implica crear y llenar las tablas de datos, proporcionando y típicamente restringiendo el acceso a los datos, etc .;
+    3. Los usuarios ejecutan consultas SQL en la base de datos para extraer los subconjuntos específicos de datos que necesitan.
+
+
+Los pasos basicos para conectarse a una base de datos son: 
+      1. Conéctese a la base de datos desde nuestra sesión R;
+      2. Ejecute consultas SQL en la base de datos para recuperar los datos que queremos;
+      3. Cierre la conexión de la base de datos.
+ 
+ 
+ Un ejemplo de una consula a una base de datos SQL es:
+ 
+ SELECT columns (i.e., variables)
+FROM tables
+WHERE row condition
+
+### Una introducción al paquete sqldf
+El paquete sqldf proporciona soporte para consultas SQL como las que se acaban de analizar en los marcos de datos. 
+```{r}
+#library(sqldf)
+#strangeCars <- sqldf("SELECT cylinders, modelYear, carNameFROM autoMpgFrame WHERE cylinders == 3 OR cylinders == 5")
+#cylinderSummary <- sqldf("SELECT cylinders, AVG(mpg), AVG(horsepower),
+#3AVG(weight), COUNT(*)
+#FROM autoMpgFrame
+#GROUP BY cylinders")
+```
+
+### Una introducción al paquete RSQLite
+El paquete RSQLite pueden crar tablas y realizar las consultas necesarias para nuestro analisis.
+
+```{r}
+
+#library(RSQLite)
+#conn <- dbConnect(SQLite(), "EconomicIndexDatabase.db")
+#dbWriteTable(conn, "GrandeLatteTable", LatteSubset)
+#dbWriteTable(conn, "BigMacTable", BigMacSubset)
+#dbListTables(conn)
+#dbGetQuery(conn, "SELECT COUNT(*) AS 'GrandeLatteRowCount' FROM GrandeLatteTable")
+#dbGetQuery(conn, "SELECT COUNT(*) AS 'BigMacRowCount' FROM BigMacTable")
+#query <- "SELECT M.country, M.BigMacIndex FROM BigMacTable AS M
+#WHERE M.country IN (SELECT country FROM GrandeLatteTable)"
+#BigMacBoth <- dbGetQuery(conn, query)
+#dbDisconnect(conn)
+```
